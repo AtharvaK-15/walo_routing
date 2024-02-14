@@ -3,16 +3,20 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 
 export default function handler(req: NextApiRequest, res: NextApiResponse) {
-  const { userId, courseId } = req.query;
+    const { userId, courseId } = req.query;
 
-  if (req.method === 'DELETE') {
-    // Handle DELETE request
-    handleUnenrollRequest(userId, courseId, res);
-  } else {
-    // Handle unsupported methods
-    res.setHeader('Allow', ['DELETE']);
-    res.status(405).end(`Method ${req.method} Not Allowed`);
-  }
+    if (req.method === 'DELETE') {
+        // Ensure userId and courseId are of type string
+        const userIdString = Array.isArray(userId) ? userId[0] : userId || '';
+        const courseIdString = Array.isArray(courseId) ? courseId[0] : courseId || '';
+
+        // Handle DELETE request
+        handleUnenrollRequest(userIdString, courseIdString, res);
+    } else {
+        // Handle unsupported methods
+        res.setHeader('Allow', ['DELETE']);
+        res.status(405).end(`Method ${req.method} Not Allowed`);
+    }
 }
 
 function handleUnenrollRequest(userId: string, courseId: string, res: NextApiResponse) {
